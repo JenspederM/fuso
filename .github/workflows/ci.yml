@@ -2,8 +2,8 @@ on:
   pull_request:
 
 jobs:
-  lint:
-    name: Lint codebase
+  ci:
+    name: Continuous Integration
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -15,10 +15,12 @@ jobs:
         run: uv run ruff format --check
       - name: Check types
         run: uv run ty check
+      - name: Run tests
+        run: uv run pytest
   ci-pass:
     name: Check CI Pass
     runs-on: ubuntu-latest
-    needs: lint
+    needs: ci
     steps:
       - name: Print success message
         run: echo "CI checks passed successfully!"
