@@ -1,0 +1,28 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+        args:
+          - --fix=lf
+  - repo: local
+    hooks:
+      - id: lint-code
+        name: Lint code
+        language: system
+        entry: bash -c "uv run ruff check --fix"
+        files: \.py$
+      - id: format-code
+        name: Format code
+        language: system
+        entry: bash -c "uv run ruff format"
+        files: \.py$
+      - id: type-check-code
+        name: Type check code
+        language: system
+        entry: bash -c "uv run ty check"
+        files: \.py$

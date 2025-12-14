@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - uses: jdx/mise-action@v3
+      - name: Run ruff linting
+        run: uv run ruff check .
+  format:
+    name: Check Code Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - uses: jdx/mise-action@v3
+      - name: Check code format with ruff
+        run: uv run ruff format --check .
+  types:
+    name: Type Checking
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - uses: jdx/mise-action@v3
+      - name: Run type checking with ty
+        run: uv run ty check .
+  tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - uses: jdx/mise-action@v3
+      - name: Run tests with pytest
+        run: uv run pytest .
+  ci-pass:
+    name: Check CI Pass
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+      - format
+      - types
+      - tests
+    steps:
+      - name: Print success message
+        run: echo "CI checks passed successfully!"
