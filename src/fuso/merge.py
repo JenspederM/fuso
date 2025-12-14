@@ -7,8 +7,8 @@ from fuso.utils import list_to_dict_by_key, sort_dict
 def merge_list_of_dicts_by_key(
     values: list[dict],
     updates: list[dict],
-    key: str = "name",
-    default_key: str = "default",
+    key: str,
+    default_key: str | None = None,
     merge_functions: dict[str, Callable[[object, object], object]] | None = None,
 ) -> list[dict]:
     """Merge two lists of dictionaries by a specified key.
@@ -17,7 +17,7 @@ def merge_list_of_dicts_by_key(
         values (list[dict]): List of original dictionaries
         updates (list[dict]): List of dictionaries with updates
         key (str): Key to use for merging
-        default_key (str): Key to use for default updates
+        default_key (str | None): Key to use for default updates
         merge_functions (dict[str, Callable[[object, object], object]] | None):
             Dictionary of functions to use for merging specific keys
 
@@ -28,7 +28,10 @@ def merge_list_of_dicts_by_key(
         merge_functions = {}
     dict_values = list_to_dict_by_key(values or [], key=key)
     dict_updates = list_to_dict_by_key(updates or [], key=key)
-    default_updates = dict_updates.pop(default_key, {})
+    if default_key is not None:
+        default_updates = dict_updates.pop(default_key, {})
+    else:
+        default_updates = {}
     result = []
     all_keys = set(dict_values.keys()).union(dict_updates.keys())
     for value_key in all_keys:
