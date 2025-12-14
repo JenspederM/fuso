@@ -27,7 +27,13 @@ def merge_list_of_dicts_by_key(
     if merge_functions is None:
         merge_functions = {}
     dict_values = list_to_dict_by_key(values or [], key=key)
-    dict_updates = list_to_dict_by_key(updates or [], key=key)
+    try:
+        dict_updates = list_to_dict_by_key(updates or [], key=key)
+    except KeyError as e:
+        raise KeyError(
+            f"Key '{key}' not found in update. Available keys: "
+            f"{', '.join(updates[0].keys())}"
+        ) from e
     if default_key is not None:
         default_updates = dict_updates.pop(default_key, {})
     else:
