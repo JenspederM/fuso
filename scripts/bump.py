@@ -13,16 +13,23 @@ def get_version():
     return pyproject["project"]["version"]
 
 
-def create_tag(version):
-    tag_command = ["git", "tag", f"v{version}"]
+def create_tag(old_version, new_version):
+    commit_command = [
+        "git",
+        "commit",
+        "-am",
+        f"Bump version: {old_version} → {new_version}",
+    ]
+    subprocess.run(commit_command, check=True)
+    tag_command = ["git", "tag", f"v{new_version}"]
     subprocess.run(tag_command, check=True)
 
 
 if __name__ == "__main__":
     args = sys.argv[1:]
-    current_version = get_version()
+    old_version = get_version()
     bump_version(args)
     new_version = get_version()
     if "--dry-run" not in args:
-        create_tag(new_version)
+        create_tag(old_version, new_version)
         print(f"Tag v{new_version} created successfully.")  # noqa: T201
