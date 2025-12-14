@@ -1,4 +1,4 @@
-def list_to_dict_by_key(values: list, key: str = "name") -> dict:
+def to_list_of_dicts_by_key(values: list, key: str = "name") -> dict:
     """Convert a list of dictionaries to a dictionary of dictionaries
         using a specified key.
 
@@ -21,6 +21,22 @@ def list_to_dict_by_key(values: list, key: str = "name") -> dict:
                 f"Key '{key}' not found in value. Available keys: {all_keys}"
             )
     return result
+
+
+def sort_list_of_dicts_by_key(
+    values: list[dict], key: str, reverse: bool = False
+) -> list[dict]:
+    """Sort a list of dictionaries by a specified key.
+
+    Args:
+        values (list[dict]): List of dictionaries to sort
+        key (str): Key to sort by
+        reverse (bool): Whether to sort in descending order
+
+    Returns:
+        list[dict]: Sorted list of dictionaries
+    """
+    return sorted(values, key=lambda x: x[key], reverse=reverse)
 
 
 def sort_dict(d: dict, key_order: list[str] | None = None) -> dict:
