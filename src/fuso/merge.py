@@ -1,3 +1,9 @@
+"""Functions for merging dictionaries and lists of dictionaries.
+
+Provides functions to merge two dictionaries or two lists of dictionaries
+by a specified key, with support for custom merge functions and sorting.
+"""
+
 from collections.abc import Callable
 
 from fuso.dotpath import from_dotpath, to_dotpath
@@ -23,6 +29,24 @@ def merge_list_of_dicts_by_key(
 
     Returns:
         list[dict]: Merged list of dictionaries
+
+    Example:
+        ```py
+        values = [
+            {"id": 1, "name": "Alice", "tags": ["user"]},
+            {"id": 2, "name": "Bob", "tags": ["admin"]},
+        ]
+        updates = [
+            {"id": 1, "tags": ["editor"]},
+            {"id": 3, "name": "Charlie", "tags": ["user"]},
+        ]
+        merged = merge_list_of_dicts_by_key(values, updates, key="id")
+        assert merged == [
+            {"id": 1, "name": "Alice", "tags": ["user", "editor"]},
+            {"id": 2, "name": "Bob", "tags": ["admin"]},
+            {"id": 3, "name": "Charlie", "tags": ["user"]},
+        ]
+        ```
     """
     if merge_functions is None:
         merge_functions = {}
@@ -70,6 +94,25 @@ def merge_dict(
 
     Returns:
         dict: Merged dictionary
+
+    Example:
+        ```py
+        values = {
+            "name": "Alice",
+            "age": 30,
+            "tags": ["user"],
+        }
+        updates = {
+            "age": 31,
+            "tags": ["editor"],
+        }
+        merged = merge_dict(values, updates)
+        assert merged == {
+            "name": "Alice",
+            "age": 31,
+            "tags": ["user", "editor"],
+        }
+        ```
     """
     result = {}
     all_keys = set(values.keys()).union(updates.keys())
@@ -113,6 +156,32 @@ def merge(
 
     Returns:
         dict: Merged dictionary
+
+    Example:
+        ```py
+        original = {
+            "name": "Alice",
+            "age": 30,
+            "tags": ["user"],
+        }
+        updates = {
+            "age": 31,
+            "tags": ["editor"],
+        }
+        merged = merge(
+            original,
+            updates,
+            merge_functions={
+                "age": lambda o, u: min(o, u),
+            },
+            post_processor=lambda d: d.update({"name": d["name"].upper()})
+        )
+        assert merged == {
+            "name": "ALICE",
+            "age": 30,
+            "tags": ["user", "editor"],
+        }
+        ```
     """
     if merge_functions is None:
         merge_functions = {}
