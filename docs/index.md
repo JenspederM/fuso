@@ -1,4 +1,13 @@
-# Fuso
+---
+title: Fuso
+description: A customizable library for deeply merging dictionaries in Python.
+keywords: dictionary merge, deep merge, python library, fuso, fusione
+layout: docs
+---
+
+<p align="center">
+  <img src="assets/logo.png" width="350" title="fuso logo">
+</p>
 
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -14,46 +23,3 @@ The goal of this library is to offer a customizable way of deeply merging dictio
 However, where this library differs is that it allows the user to specify custom `merge_functions` that should be applied for specific dot paths.
 
 For example, you may want to concatenate lists found at the dot path `settings.plugins`, but for other lists, you may want to replace them entirely. With `fuso`, this is possible.
-
-## Installation
-You can install `fuso` via pip:
-
-```bash
-pip install fuso
-```
-
-## Usage
-Here's a basic example of how to use `fuso` to merge two dictionaries:
-
-```python
-from fuso import merge
-
-dict1 = {
-    "settings": {
-        "theme": "dark",
-        "plugins": ["plugin1", "plugin2"]
-    }
-}
-dict2 = {
-    "settings": {
-        "plugins": ["plugin3"],
-        "language": "en"
-    }
-}
-merged_dict = merge(dict1, dict2)
-print(merged_dict)
-# {
-#    "settings": {
-#      "theme": "dark",
-#      "plugins": ["plugin1", "plugin2", "plugin3"],
-#      "language": "en"
-# }
-```
-## Documentation
-For more detailed documentation, including advanced usage and customization options, please visit the [official documentation](https://fuso.readthedocs.io).
-
-## Contributing
-Contributions are welcome! Please feel free to submit issues or pull requests on the [GitHub repository](https://github.com/jenspederm/fuso).
-
-## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
