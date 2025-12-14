@@ -17,6 +17,7 @@ builds:
     buildmode: sdist
 
 changelog:
+  use: github
   sort: asc
   filters:
     exclude:
