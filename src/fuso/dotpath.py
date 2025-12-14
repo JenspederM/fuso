@@ -1,6 +1,10 @@
-from typing import TypeVar, overload
+"""Functions to convert nested dictionaries to and from dotpath format.
 
-T = TypeVar("T")
+A dotpath dictionary is a flat dictionary where nested keys are represented
+as dot-separated strings.
+"""
+
+from typing import overload
 
 
 def _to_dotpath(value: dict, parent_key: str = "", sep: str = "."):
@@ -41,6 +45,19 @@ def to_dotpath(value: dict, sep: str = ".") -> dict:
 
     Returns:
         dict: Dotpath dictionary
+
+    Example:
+        ```py
+        nested_dict = {
+            "a": {
+                "b": {
+                    "c": 1
+                },
+                "d": 2
+            }
+        }
+        assert to_dotpath(nested_dict) == {'a.b.c': 1, 'a.d': 2}
+        ```
     """
     return _to_dotpath(value, sep=sep)
 
@@ -81,7 +98,7 @@ def from_dotpath(
     value: dict | list | str | int | float | bool | None,
     sep: str = ".",
     dotpath_ignores: list | None = None,
-):
+) -> dict | list | str | int | float | bool | None:
     """Convert a dotpath dictionary to a nested dictionary.
 
     Args:
@@ -92,6 +109,15 @@ def from_dotpath(
 
     Returns:
         dict | list | str | int | float | bool | None: Nested dictionary
+
+    Example:
+        ```py
+        dotpath_dict = {
+            "a.b.c": 1,
+            "a.d": 2
+        }
+        assert from_dotpath(dotpath_dict) == {'a': {'b': {'c': 1}, 'd': 2}}
+        ```
     """
     if dotpath_ignores is None:
         dotpath_ignores = []

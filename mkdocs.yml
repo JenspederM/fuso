@@ -8,22 +8,25 @@ watch:
   - scripts
   - mkdocs.yml
 extra_css:
-  - stylesheets/extra.css
+  - assets/extra.css
 theme:
   name: material
   logo: assets/logo.png
+  favicon: assets/logo.png
+  icon:
+    repo: fontawesome/brands/github
   features:
-    - navigation.tabs
-    - navigation.indexes
+    - navigation.instant
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
     - content.code.copy
     - content.code.annotate
+    - toc.follow
+    - toc.integrate
+    - search.highlight
+    - search.suggest
   palette:
-    # Palette toggle for automatic mode
-    # - media: "(prefers-color-scheme)"
-    #   toggle:
-    #     icon: material/brightness-auto
-    #     name: Switch to light mode
-
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
@@ -49,6 +52,9 @@ markdown_extensions:
       alternate_style: true
   - toc
 plugins:
+  - privacy
+  - offline
+  - search
   - gen-files:
       scripts:
         - scripts/gen_ref_pages.py
@@ -57,6 +63,7 @@ plugins:
         python:
           options:
             show_root_heading: false
+            show_root_toc_entry: false
             docstring_options:
               ignore_init_summary: true
               trim_doctest_flags: true
