@@ -29,8 +29,3 @@ release:
     ---
 
     Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
-
-# global after hooks
-after:
-  - cmd: "uv publish"
-    if: "{{ .IsRelease }}"

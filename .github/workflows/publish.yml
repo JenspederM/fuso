@@ -23,3 +23,5 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
         run: goreleaser release --clean
+      - name: Publish package
+        run: uv build && uv publish
