@@ -1,6 +1,6 @@
 import pytest
 
-from fuso.utils import sort_dict, to_list_of_dicts_by_key
+from fuso.utils import sort_dict, sort_list_of_dicts_by_key, to_list_of_dicts_by_key
 
 
 def test_list_to_dict_by_key():
@@ -70,3 +70,13 @@ def test_list_to_dict_by_key_empty():
 def test_sort_dict(value, key_order, expected_keys):
     sorted_dict = sort_dict(value, key_order)
     assert list(sorted_dict.keys()) == expected_keys
+
+
+def test_sort_list_of_dicts_by_key():
+    input_list = [
+        {"name": "b", "value": 2},
+        {"name": "a", "value": 1},
+        {"name": "c", "value": 3},
+    ]
+    sorted_list = sort_list_of_dicts_by_key(input_list, key="name")
+    assert [item["name"] for item in sorted_list] == ["a", "b", "c"]
