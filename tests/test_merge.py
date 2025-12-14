@@ -256,7 +256,7 @@ def test_merge_dict_key_order_none():
         (
             {"a": 1, "b": [1, 2]},
             {"b": [3, 4], "c": 4},
-            {"a": 1, "b": [3, 4], "c": 4},
+            {"a": 1, "b": [1, 2, 3, 4], "c": 4},
         ),
         (
             {"a": {"x": 1}, "b": 2},
@@ -266,12 +266,22 @@ def test_merge_dict_key_order_none():
         (
             {"a": {"x": 1, "y": [1, 2]}, "b": 2},
             {"a": {"y": [3, 4]}, "b": 3},
-            {"a": {"x": 1, "y": [3, 4]}, "b": 3},
+            {"a": {"x": 1, "y": [1, 2, 3, 4]}, "b": 3},
         ),
         (
             {"a": {"x": 1, "y": [1, 2]}, "b": 2},
             {"a": {"y": None}, "b": 3},
             {"a": {"x": 1, "y": [1, 2]}, "b": 3},
+        ),
+        (
+            {"a": {"x": 1, "y": None}, "b": 2},
+            {"a": {"y": [1, 2]}, "b": 3},
+            {"a": {"x": 1, "y": [1, 2]}, "b": 3},
+        ),
+        (
+            {"a": {"x": {"z": 1}, "y": None}, "b": 2},
+            {"a": {"x": {"w": 2}}, "b": 3},
+            {"a": {"x": {"z": 1, "w": 2}, "y": None}, "b": 3},
         ),
     ],
 )
@@ -425,3 +435,17 @@ def test_merge_with_key_order_none():
     assert result == expected_output
     # Order may vary since no key_order is provided
     assert set(result.keys()) == {"a", "b", "c"}
+
+
+def test_merge_type_mismatch():
+    original = {
+        "a": 1,
+    }
+    updates = {
+        "a": [2, 3],
+    }
+    with pytest.raises(
+        TypeError,
+        match="Cannot merge different types: <class 'int'> and <class 'list'>",
+    ):
+        merge(original, updates)

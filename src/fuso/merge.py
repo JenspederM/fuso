@@ -84,6 +84,16 @@ def merge_dict(
     return sort_dict(result, key_order=key_order)
 
 
+def _merge(value, update):
+    if value is not None and update is not None and type(value) is not type(update):
+        raise TypeError(
+            f"Cannot merge different types: {type(value)} and {type(update)}"
+        )
+    if isinstance(value, list) and isinstance(update, list):
+        return value + update
+    return update
+
+
 def merge(
     original: dict,
     updates: dict,
@@ -119,7 +129,7 @@ def merge(
         elif update_value is None:
             result[key] = original_value
         else:
-            result[key] = update_value
+            result[key] = _merge(original_value, update_value)
     result = from_dotpath(result)
     if post_processor:
         result = post_processor(result)
