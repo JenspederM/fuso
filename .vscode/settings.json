@@ -11,4 +11,19 @@
             "comments": false
         }
     },
+    "[python]": {
+        "diffEditor.ignoreTrimWhitespace": false,
+        "editor.defaultColorDecorators": "never",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+        },
+        "editor.wordBasedSuggestions": "off",
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    },
+    "ruff.configurationPreference": "filesystemFirst",
+    "editor.rulers": [
+        88
+    ]
 }
