@@ -4,25 +4,50 @@ on:
   pull_request:
 
 jobs:
-  ci:
-    name: Continuous Integration
+  lint:
+    name: Lint Code
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v4
       - uses: jdx/mise-action@v3
-      - name: Check linting
-        run: uv run ruff check
-      - name: Check format
-        run: uv run ruff format --check
-      - name: Check types
-        run: uv run ty check
-      - name: Run tests
-        run: uv run pytest
+      - name: Run ruff linting
+        run: uv run ruff check .
+  format:
+    name: Check Code Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - uses: jdx/mise-action@v3
+      - name: Check code format with ruff
+        run: uv run ruff format --check .
+  types:
+    name: Type Checking
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - uses: jdx/mise-action@v3
+      - name: Run type checking with ty
+        run: uv run ty check .
+  tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - uses: jdx/mise-action@v3
+      - name: Run tests with pytest
+        run: uv run pytest .
   ci-pass:
     name: Check CI Pass
     runs-on: ubuntu-latest
-    needs: ci
+    needs:
+      - lint
+      - format
+      - types
+      - tests
     steps:
       - name: Print success message
         run: echo "CI checks passed successfully!"
