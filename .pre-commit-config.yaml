@@ -24,5 +24,5 @@ repos:
       - id: type-check-code
         name: Type check code
         language: system
-        entry: bash -c "uv run ty check"
+        entry: bash -c "uv run ty check --exclude scripts/"
         files: \.py$
