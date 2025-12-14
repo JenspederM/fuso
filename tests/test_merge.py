@@ -364,3 +364,64 @@ def test_merge_with_postprocessor():
         "total": 25,  # 15 from updates + 10 from postprocessor
     }
     assert merge(original, updates, post_processor=postprocessor) == expected_output
+
+
+def test_merge_with_key_order():
+    original = {
+        "b": 2,
+        "a": 1,
+        "c": 3,
+    }
+    updates = {
+        "c": 4,
+        "a": 5,
+    }
+    expected_output = {
+        "a": 5,
+        "b": 2,
+        "c": 4,
+    }
+    result = merge(original, updates, key_order=["a", "b", "c"])
+    assert result == expected_output
+    assert list(result.keys()) == ["a", "b", "c"]
+
+
+def test_merge_with_key_order_partial():
+    original = {
+        "b": 2,
+        "a": 1,
+        "c": 3,
+    }
+    updates = {
+        "c": 4,
+        "a": 5,
+    }
+    expected_output = {
+        "a": 5,
+        "b": 2,
+        "c": 4,
+    }
+    result = merge(original, updates, key_order=["a", "c"])
+    assert result == expected_output
+    assert list(result.keys()) == ["a", "c", "b"]
+
+
+def test_merge_with_key_order_none():
+    original = {
+        "b": 2,
+        "a": 1,
+        "c": 3,
+    }
+    updates = {
+        "c": 4,
+        "a": 5,
+    }
+    expected_output = {
+        "a": 5,
+        "b": 2,
+        "c": 4,
+    }
+    result = merge(original, updates, key_order=None)
+    assert result == expected_output
+    # Order may vary since no key_order is provided
+    assert set(result.keys()) == {"a", "b", "c"}
