@@ -19,9 +19,9 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
       - uses: jdx/mise-action@v3
+      - name: Publish package
+        run: uv build && uv publish
       - name: Run GoReleaser
         env:
           GITHUB_TOKEN: "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
         run: goreleaser release --clean
-      - name: Publish package
-        run: uv build && uv publish
