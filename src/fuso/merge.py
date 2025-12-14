@@ -1,3 +1,5 @@
+from collections.abc import Callable
+
 from fuso.dotpath import from_dotpath, to_dotpath
 from fuso.utils import list_to_dict_by_key, sort_dict
 
@@ -7,7 +9,7 @@ def merge_list_of_dicts_by_key(
     updates: list[dict],
     key: str = "name",
     default_key: str = "default",
-    merge_functions: dict | None = None,
+    merge_functions: dict[str, Callable[[object, object], object]] | None = None,
 ) -> list[dict]:
     """Merge two lists of dictionaries by a specified key.
 
@@ -16,8 +18,8 @@ def merge_list_of_dicts_by_key(
         updates (list[dict]): List of dictionaries with updates
         key (str): Key to use for merging
         default_key (str): Key to use for default updates
-        merge_functions (dict | None): Dictionary of functions to use for merging
-            specific keys
+        merge_functions (dict[str, Callable[[object, object], object]] | None):
+            Dictionary of functions to use for merging specific keys
 
     Returns:
         list[dict]: Merged list of dictionaries
@@ -43,15 +45,17 @@ def merge_list_of_dicts_by_key(
 
 
 def merge_dict(
-    values: dict, updates: dict, merge_functions: dict | None = None
+    values: dict,
+    updates: dict,
+    merge_functions: dict[str, Callable[[object, object], object]] | None = None,
 ) -> dict:
     """Merge two dictionaries.
 
     Args:
         values (dict): Original dictionary
         updates (dict): Dictionary with updates
-        merge_functions (dict | None): Dictionary of functions to use for merging
-            specific keys
+        merge_functions (dict[str, Callable[[object, object], object]] | None):
+            Dictionary of functions to use for merging specific keys
 
     Returns:
         dict: Merged dictionary
@@ -72,7 +76,7 @@ def merge_dict(
 def merge(
     original: dict,
     updates: dict,
-    merge_functions: dict | None = None,
+    merge_functions: dict[str, Callable[[object, object], object]] | None = None,
     post_processor=None,
 ) -> dict:
     """Merge two dictionaries.
@@ -80,8 +84,8 @@ def merge(
     Args:
         original (dict): Original dictionary
         updates (dict): Dictionary with updates
-        merge_functions (dict | None): Dictionary of functions to use for merging
-            specific keys
+        merge_functions (dict[str, Callable[[object, object], object]] | None):
+            Dictionary of functions to use for merging specific keys
         post_processor (callable | None): Function to process the result after merging
 
     Returns:
@@ -97,7 +101,7 @@ def merge(
         original_value = original_dotpath.get(key)
         update_value = update_dotpath.get(key)
         merge_function = merge_functions.get(key)
-        if merge_function and update_value is not None:
+        if merge_function:
             result[key] = merge_function(original_value, update_value)
         elif update_value is None:
             result[key] = original_value
