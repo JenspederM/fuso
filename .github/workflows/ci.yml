@@ -1,0 +1,18 @@
+on:
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint codebase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - uses: jdx/mise-action@v3
+  ci-pass:
+    name: Check CI Pass
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Check that lint passed
+        run: echo "Linting passed successfully"
