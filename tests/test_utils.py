@@ -1,6 +1,6 @@
 import pytest
 
-from fuso.utils import list_to_dict_by_key, sort_dict
+from fuso.utils import sort_dict, to_list_of_dicts_by_key
 
 
 def test_list_to_dict_by_key():
@@ -12,7 +12,7 @@ def test_list_to_dict_by_key():
         "item1": {"value": 10},
         "item2": {"value": 20},
     }
-    assert list_to_dict_by_key(input_data) == expected_output
+    assert to_list_of_dicts_by_key(input_data) == expected_output
 
     # Test with a different key
     input_data = [
@@ -23,7 +23,7 @@ def test_list_to_dict_by_key():
         "item1": {"value": 10},
         "item2": {"value": 20},
     }
-    assert list_to_dict_by_key(input_data, key="id") == expected_output
+    assert to_list_of_dicts_by_key(input_data, key="id") == expected_output
 
     # Test KeyError
     input_data = [
@@ -33,13 +33,13 @@ def test_list_to_dict_by_key():
     with pytest.raises(
         KeyError, match="Key 'name' not found in value. Available keys: value"
     ):
-        list_to_dict_by_key(input_data)
+        to_list_of_dicts_by_key(input_data)
 
 
 def test_list_to_dict_by_key_empty():
     input_data = []
     expected_output = {}
-    assert list_to_dict_by_key(input_data) == expected_output
+    assert to_list_of_dicts_by_key(input_data) == expected_output
 
 
 @pytest.mark.parametrize(

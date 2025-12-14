@@ -1,7 +1,7 @@
 from collections.abc import Callable
 
 from fuso.dotpath import from_dotpath, to_dotpath
-from fuso.utils import list_to_dict_by_key, sort_dict
+from fuso.utils import sort_dict, sort_list_of_dicts_by_key, to_list_of_dicts_by_key
 
 
 def merge_list_of_dicts_by_key(
@@ -26,9 +26,9 @@ def merge_list_of_dicts_by_key(
     """
     if merge_functions is None:
         merge_functions = {}
-    dict_values = list_to_dict_by_key(values or [], key=key)
+    dict_values = to_list_of_dicts_by_key(values or [], key=key)
     try:
-        dict_updates = list_to_dict_by_key(updates or [], key=key)
+        dict_updates = to_list_of_dicts_by_key(updates or [], key=key)
     except KeyError as e:
         raise KeyError(
             f"Key '{key}' not found in update. Available keys: "
@@ -50,13 +50,14 @@ def merge_list_of_dicts_by_key(
         )
         merged[key] = value_key
         result.append(merged)
-    return sorted(result, key=lambda x: x[key])
+    return sort_list_of_dicts_by_key(result, key=key)
 
 
 def merge_dict(
     values: dict,
     updates: dict,
     merge_functions: dict[str, Callable[[object, object], object]] | None = None,
+    key_order: list[str] | None = None,
 ) -> dict:
     """Merge two dictionaries.
 
@@ -65,6 +66,7 @@ def merge_dict(
         updates (dict): Dictionary with updates
         merge_functions (dict[str, Callable[[object, object], object]] | None):
             Dictionary of functions to use for merging specific keys
+        key_order (list[str] | None): Non-exhaustive list of keys to sort by
 
     Returns:
         dict: Merged dictionary
@@ -79,7 +81,7 @@ def merge_dict(
             result[key] = merge_function(value, update)
         else:
             result[key] = update if update is not None else value
-    return sort_dict(result)
+    return sort_dict(result, key_order=key_order)
 
 
 def merge(
@@ -87,6 +89,7 @@ def merge(
     updates: dict,
     merge_functions: dict[str, Callable[[object, object], object]] | None = None,
     post_processor=None,
+    key_order: list[str] | None = None,
 ) -> dict:
     """Merge two dictionaries.
 
@@ -96,6 +99,7 @@ def merge(
         merge_functions (dict[str, Callable[[object, object], object]] | None):
             Dictionary of functions to use for merging specific keys
         post_processor (callable | None): Function to process the result after merging
+        key_order (list[str] | None): Non-exhaustive list of keys to sort by
 
     Returns:
         dict: Merged dictionary
@@ -119,4 +123,4 @@ def merge(
     result = from_dotpath(result)
     if post_processor:
         result = post_processor(result)
-    return sort_dict(result)
+    return sort_dict(result, key_order=key_order)
