@@ -18,10 +18,17 @@ def create_tag(old_version, new_version):
         "git",
         "commit",
         "-am",
-        f"Bump version: {old_version} → {new_version}",
+        f"bump: {old_version} → {new_version}",
     ]
     subprocess.run(commit_command, check=True)
-    tag_command = ["git", "tag", f"v{new_version}"]
+    tag_command = [
+        "git",
+        "tag",
+        "-a",
+        f"v{new_version}",
+        "-m",
+        f"Version {new_version}",
+    ]
     subprocess.run(tag_command, check=True)
 
 
