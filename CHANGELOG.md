@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.3](https://github.com/JenspederM/fuso/compare/v0.2.2...v0.2.3) (2026-04-09)
+
+
+### Bug Fixes
+
+* forgot to set step id ([d9c7782](https://github.com/JenspederM/fuso/commit/d9c7782cede6390e9afd352ab14cbc98f314a416))
+* we still need == 'true' ([9e71f9d](https://github.com/JenspederM/fuso/commit/9e71f9dc90414fad2bcc4519366c161b3b4ca978))
+
 ## [0.2.2](https://github.com/JenspederM/fuso/compare/v0.2.1...v0.2.2) (2026-04-09)
 
 
