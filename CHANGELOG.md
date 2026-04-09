@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/JenspederM/fuso/compare/v0.2.4...v0.3.0) (2026-04-09)
+
+
+### Features
+
+* make factory functions generic ([6fdd768](https://github.com/JenspederM/fuso/commit/6fdd768323860eb360d21ebc79bfd5839dcde0a9))
+
 ## [0.2.4](https://github.com/JenspederM/fuso/compare/v0.2.3...v0.2.4) (2026-04-09)
 
 
