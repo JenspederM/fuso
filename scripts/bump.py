@@ -1,6 +1,7 @@
 import subprocess
 import sys
-import tomllib
+
+import tomlkit
 
 
 def bump_version(args):
@@ -9,8 +10,8 @@ def bump_version(args):
 
 def get_version():
     with open("pyproject.toml", "rb") as f:
-        pyproject = tomllib.load(f)
-    return pyproject["project"]["version"]
+        pyproject = tomlkit.load(f)
+    return pyproject.get("project", {}).get("version")
 
 
 def create_tag(old_version, new_version):

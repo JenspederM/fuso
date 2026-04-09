@@ -5,7 +5,6 @@ by a specified key, with support for custom merge functions and sorting.
 """
 
 from collections.abc import Callable
-from typing import TypeVar
 
 from fuso.dotpath import from_dotpath, to_dotpath
 from fuso.utils import sort_dict, sort_list_of_dicts_by_key, to_list_of_dicts_by_key
@@ -128,10 +127,10 @@ def merge_dict(
     return sort_dict(result, key_order=key_order)
 
 
-MT = TypeVar("MT")
-
-
-def _merge(value: MT, update: MT) -> MT:
+def _merge(
+    value: list | dict | str | int | float | None,
+    update: list | dict | str | int | float | None,
+) -> list | dict | str | int | float | None:
     if value is not None and update is not None and type(value) is not type(update):
         raise TypeError(
             f"Cannot merge different types: {type(value)} and {type(update)}"
@@ -144,8 +143,9 @@ def _merge(value: MT, update: MT) -> MT:
         return value + update
     elif isinstance(value, dict) and isinstance(update, dict):
         result = {}
-        for key in set(value.keys()).union(update.keys()):
-            result[key] = _merge(value.get(key), update.get(key))
+        all_keys = set(value.keys()).union(update.keys())
+        for key in all_keys:
+            value[key] = _merge(value.get(key), update.get(key))
         return result
     return update
 
