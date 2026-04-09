@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/JenspederM/fuso/compare/v0.2.0...v0.2.1) (2026-04-09)
+
+
+### Bug Fixes
+
+* typo in publish workflow ([419faef](https://github.com/JenspederM/fuso/commit/419faef390c618dc87bf64de1d343dcf66ee99f8))
+
 ## [0.2.0](https://github.com/JenspederM/fuso/compare/v0.1.5...v0.2.0) (2026-04-09)
 
 
