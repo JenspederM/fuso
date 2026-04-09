@@ -145,7 +145,7 @@ def _merge(
         result = {}
         all_keys = set(value.keys()).union(update.keys())
         for key in all_keys:
-            value[key] = _merge(value.get(key), update.get(key))
+            result[key] = _merge(value.get(key), update.get(key))
         return result
     return update
 
