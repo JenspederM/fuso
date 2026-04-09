@@ -22,6 +22,8 @@ jobs:
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           release-type: python
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
       - name: Check out
         if: ${{ steps.release.outputs.release_created }}
         uses: actions/checkout@v4
