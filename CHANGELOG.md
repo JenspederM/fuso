@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/JenspederM/fuso/compare/v0.2.1...v0.2.2) (2026-04-09)
+
+
+### Bug Fixes
+
+* sets == 'true' ([8ec49fa](https://github.com/JenspederM/fuso/commit/8ec49fa659a7dc86bb662bfd316e0bab52002af0))
+
 ## [0.2.1](https://github.com/JenspederM/fuso/compare/v0.2.0...v0.2.1) (2026-04-09)
 
 
