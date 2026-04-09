@@ -5,9 +5,12 @@ by a specified key, with support for custom merge functions and sorting.
 """
 
 from collections.abc import Callable
+from typing import TypeVar
 
 from fuso.dotpath import from_dotpath, to_dotpath
 from fuso.utils import sort_dict, sort_list_of_dicts_by_key, to_list_of_dicts_by_key
+
+MFT = TypeVar("MFT")
 
 
 def merge_list_of_dicts_by_key(
@@ -15,7 +18,7 @@ def merge_list_of_dicts_by_key(
     updates: list[dict],
     key: str,
     default_key: str | None = None,
-    merge_functions: dict[str, Callable[[object, object], object]] | None = None,
+    merge_functions: dict[str, Callable[[MFT, MFT], MFT]] | None = None,
 ) -> list[dict]:
     """Merge two lists of dictionaries by a specified key.
 
@@ -24,7 +27,7 @@ def merge_list_of_dicts_by_key(
         updates (list[dict]): List of dictionaries with updates
         key (str): Key to use for merging
         default_key (str | None): Key to use for default updates
-        merge_functions (dict[str, Callable[[object, object], object]] | None):
+        merge_functions (dict[str, Callable[[MFT, MFT], MFT]] | None):
             Dictionary of functions to use for merging specific keys
 
     Returns:
@@ -80,7 +83,7 @@ def merge_list_of_dicts_by_key(
 def merge_dict(
     values: dict,
     updates: dict,
-    merge_functions: dict[str, Callable[[object, object], object]] | None = None,
+    merge_functions: dict[str, Callable[[MFT, MFT], MFT]] | None = None,
     key_order: list[str] | None = None,
 ) -> dict:
     """Merge two dictionaries.
@@ -88,7 +91,7 @@ def merge_dict(
     Args:
         values (dict): Original dictionary
         updates (dict): Dictionary with updates
-        merge_functions (dict[str, Callable[[object, object], object]] | None):
+        merge_functions (dict[str, Callable[[MFT, MFT], MFT]] | None):
             Dictionary of functions to use for merging specific keys
         key_order (list[str] | None): Non-exhaustive list of keys to sort by
 
@@ -153,7 +156,7 @@ def _merge(
 def merge(
     original: dict,
     updates: dict,
-    merge_functions: dict[str, Callable[[object, object], object]] | None = None,
+    merge_functions: dict[str, Callable[[MFT, MFT], MFT]] | None = None,
     post_processor: Callable[[dict], dict] | None = None,
     key_order: list[str] | None = None,
 ) -> dict:
@@ -162,7 +165,7 @@ def merge(
     Args:
         original (dict): Original dictionary
         updates (dict): Dictionary with updates
-        merge_functions (dict[str, Callable[[object, object], object]] | None):
+        merge_functions (dict[str, Callable[[MFT, MFT], MFT]] | None):
             Dictionary of functions to use for merging specific keys
         post_processor (callable | None): Function to process the result after merging
         key_order (list[str] | None): Non-exhaustive list of keys to sort by
@@ -216,3 +219,60 @@ def merge(
     if post_processor:
         result = post_processor(result)
     return sort_dict(result, key_order=key_order)
+
+
+def create_merge_factory(
+    merge_functions: dict[str, Callable[[MFT, MFT], MFT]] | None = None,
+    key_order: list[str] | None = None,
+    post_processor: Callable[[dict], dict] | None = None,
+) -> Callable[[dict, dict], dict]:
+    """Create a merge function that merges arbitrarily nested dictionaries.
+
+    Args:
+        merge_functions (dict[str, Callable[[MFT, MFT], MFT]] | None):
+            Dictionary of functions to use for merging specific keys
+        key_order (list[str] | None): List of keys to determine the order of merging.
+
+    Returns:
+        Callable: Function that merges two arbitrarily nested dictionaries.
+    """
+
+    def factory(values, updates):
+        return merge(
+            values,
+            updates,
+            merge_functions=merge_functions,
+            key_order=key_order,
+            post_processor=post_processor,
+        )
+
+    return factory
+
+
+def create_merge_list_of_dicts_by_key_factory(
+    key: str,
+    default_key: str | None = None,
+    merge_functions: dict[str, Callable[[MFT, MFT], MFT]] | None = None,
+):
+    """Create a merge function that merges two lists of dictionaries by a specified key.
+
+    Args:
+        key (str): Key to use for merging
+        default_key (str | None): Key to use for default updates
+        merge_functions (dict[str, Callable[[MFT, MFT], MFT]] | None):
+            Dictionary of functions to use for merging specific keys
+
+    Returns:
+        Callable: Function that merges two lists of dictionaries by a specified key.
+    """
+
+    def factory(values, updates):
+        return merge_list_of_dicts_by_key(
+            values=values,
+            updates=updates,
+            key=key,
+            default_key=default_key,
+            merge_functions=merge_functions,
+        )
+
+    return factory
