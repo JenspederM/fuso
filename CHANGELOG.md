@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.4](https://github.com/JenspederM/fuso/compare/v0.2.3...v0.2.4) (2026-04-09)
+
+
+### Documentation
+
+* adds changelog to documentation ([8854bed](https://github.com/JenspederM/fuso/commit/8854bedcb43068361a413d5e37459c29222ed375))
+
 ## [0.2.3](https://github.com/JenspederM/fuso/compare/v0.2.2...v0.2.3) (2026-04-09)
 
 
