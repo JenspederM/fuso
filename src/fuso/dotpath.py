@@ -58,6 +58,19 @@ def to_dotpath(value: dict, sep: str = ".") -> dict:
         }
         assert to_dotpath(nested_dict) == {'a.b.c': 1, 'a.d': 2}
         ```
+
+    Example:
+        ```py
+        nested_dict = {
+            "a": {
+                "b": [
+                    {"c": 1},
+                    {"d": 2}
+                ]
+            }
+        }
+        assert to_dotpath(nested_dict) == {'a.b': [{'c': 1}, {'d': 2}]}
+        ```
     """
     return _to_dotpath(value, sep=sep)
 
