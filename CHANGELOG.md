@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/JenspederM/fuso/compare/v0.3.0...v0.3.1) (2026-04-09)
+
+
+### Bug Fixes
+
+* the values for merge_functions are unknown ([18ac989](https://github.com/JenspederM/fuso/commit/18ac989ee639e6e8bb139da857f0be84a9931685))
+
 ## [0.3.0](https://github.com/JenspederM/fuso/compare/v0.2.4...v0.3.0) (2026-04-09)
 
 
