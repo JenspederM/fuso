@@ -8,7 +8,7 @@ def create_merge_factory(
     key_order: list[str] | None = None,
     post_processor: Callable[[dict], dict] | None = None,
 ) -> Callable[[dict, dict], dict]:
-    """Create a merge function that merges dictionaries of dictionaries.
+    """Create a merge function that merges arbitrarily nested dictionaries.
 
     Args:
         merge_functions (dict[str, Callable[[object, object], object]] | None):
@@ -16,7 +16,7 @@ def create_merge_factory(
         key_order (list[str] | None): List of keys to determine the order of merging.
 
     Returns:
-        Callable: Function that merges two dictionaries of dictionaries
+        Callable: Function that merges two arbitrarily nested dictionaries.
     """
 
     def factory(values, updates):
