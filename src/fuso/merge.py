@@ -123,17 +123,30 @@ def merge_dict(
         if merge_function:
             result[key] = merge_function(value, update)
         else:
-            result[key] = update if update is not None else value
+            result[key] = _merge(value, update)
     return sort_dict(result, key_order=key_order)
 
 
-def _merge(value, update):
+def _merge(
+    value: list | dict | str | int | float | None,
+    update: list | dict | str | int | float | None,
+) -> list | dict | str | int | float | None:
     if value is not None and update is not None and type(value) is not type(update):
         raise TypeError(
             f"Cannot merge different types: {type(value)} and {type(update)}"
         )
-    if isinstance(value, list) and isinstance(update, list):
+    if value is None:
+        return update
+    elif update is None:
+        return value
+    elif isinstance(value, list) and isinstance(update, list):
         return value + update
+    elif isinstance(value, dict) and isinstance(update, dict):
+        result = {}
+        all_keys = set(value.keys()).union(update.keys())
+        for key in all_keys:
+            result[key] = _merge(value.get(key), update.get(key))
+        return result
     return update
 
 
@@ -141,7 +154,7 @@ def merge(
     original: dict,
     updates: dict,
     merge_functions: dict[str, Callable[[object, object], object]] | None = None,
-    post_processor=None,
+    post_processor: Callable[[dict], dict] | None = None,
     key_order: list[str] | None = None,
 ) -> dict:
     """Merge two dictionaries.

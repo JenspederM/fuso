@@ -7,6 +7,8 @@ bump *args:
 test:
     uv run pytest tests
 
+check: lint format types
+
 lint:
     uv run ruff check --fix
 
