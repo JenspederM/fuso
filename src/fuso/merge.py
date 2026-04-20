@@ -11,12 +11,13 @@ from fuso.dotpath import from_dotpath, to_dotpath
 from fuso.utils import sort_dict, sort_list_of_dicts_by_key, to_list_of_dicts_by_key
 
 
-def merge_list_of_dicts_by_key(
+def merge_list_of_dicts_by_key(  # noqa: PLR0913 - Too many arguments, but they are all necessary for the functionality
     values: list[dict],
     updates: list[dict],
     key: str,
     default_key: str | None = None,
     merge_functions: dict[str, Callable[[Any, Any], Any]] | None = None,
+    object_key_order: list[str] | None = None,
 ) -> list[dict]:
     """Merge two lists of dictionaries by a specified key.
 
@@ -27,6 +28,8 @@ def merge_list_of_dicts_by_key(
         default_key (str | None): Key to use for default updates
         merge_functions (dict[str, Callable[[Any, Any], Any]] | None):
             Dictionary of functions to use for merging specific keys
+        object_key_order (list[str] | None): Non-exhaustive list of keys to sort objects
+            by
 
     Returns:
         list[dict]: Merged list of dictionaries
@@ -72,6 +75,7 @@ def merge_list_of_dicts_by_key(
             values=value,
             updates=merge_dict(values=default_updates, updates=specific_update),
             merge_functions=merge_functions,
+            key_order=object_key_order,
         )
         merged[key] = value_key
         result.append(merged)
