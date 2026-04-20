@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2](https://github.com/JenspederM/fuso/compare/v0.3.1...v0.3.2) (2026-04-20)
+
+
+### Bug Fixes
+
+* add option to sort object within a list of objects ([d83b165](https://github.com/JenspederM/fuso/commit/d83b1650697541ddc6b48cc4fa2634053e5b2397))
+
 ## [0.3.1](https://github.com/JenspederM/fuso/compare/v0.3.0...v0.3.1) (2026-04-09)
 
 
