@@ -7,7 +7,6 @@ by a specified key, with support for custom merge functions and sorting.
 from collections.abc import Callable
 from typing import Any
 
-from fuso.dotpath import from_dotpath, to_dotpath
 from fuso.utils import sort_dict, sort_list_of_dicts_by_key, to_list_of_dicts_by_key
 
 
@@ -203,13 +202,11 @@ def merge(
     """
     if merge_functions is None:
         merge_functions = {}
-    original_dotpath = to_dotpath(original)
-    update_dotpath = to_dotpath(updates)
     result = {}
-    all_keys = set(original_dotpath.keys()).union(update_dotpath.keys())
+    all_keys = set(original.keys()).union(updates.keys())
     for key in all_keys:
-        original_value = original_dotpath.get(key)
-        update_value = update_dotpath.get(key)
+        original_value = original.get(key)
+        update_value = updates.get(key)
         merge_function = merge_functions.get(key)
         if merge_function:
             result[key] = merge_function(original_value, update_value)
@@ -217,7 +214,6 @@ def merge(
             result[key] = original_value
         else:
             result[key] = _merge(original_value, update_value)
-    result = from_dotpath(result)
     if post_processor:
         result = post_processor(result)
     return sort_dict(result, key_order=key_order)
@@ -234,6 +230,7 @@ def create_merge_factory(
         merge_functions (dict[str, Callable[[Any, Any], Any]] | None):
             Dictionary of functions to use for merging specific keys
         key_order (list[str] | None): List of keys to determine the order of merging.
+        post_processor (callable | None): Function to process the result after merging
 
     Returns:
         Callable: Function that merges two arbitrarily nested dictionaries.
@@ -255,6 +252,7 @@ def create_merge_list_of_dicts_by_key_factory(
     key: str,
     default_key: str | None = None,
     merge_functions: dict[str, Callable[[Any, Any], Any]] | None = None,
+    object_key_order: list[str] | None = None,
 ):
     """Create a merge function that merges two lists of dictionaries by a specified key.
 
@@ -263,6 +261,8 @@ def create_merge_list_of_dicts_by_key_factory(
         default_key (str | None): Key to use for default updates
         merge_functions (dict[str, Callable[[Any, Any], Any]] | None):
             Dictionary of functions to use for merging specific keys
+        object_key_order (list[str] | None): Non-exhaustive list of keys to sort objects
+            by
 
     Returns:
         Callable: Function that merges two lists of dictionaries by a specified key.
@@ -275,6 +275,7 @@ def create_merge_list_of_dicts_by_key_factory(
             key=key,
             default_key=default_key,
             merge_functions=merge_functions,
+            object_key_order=object_key_order,
         )
 
     return factory
