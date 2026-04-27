@@ -155,8 +155,8 @@ def _merge(
 
 
 def merge(
-    original: dict,
-    updates: dict,
+    original: dict | None,
+    updates: dict | None,
     merge_functions: dict[str, Callable[[Any, Any], Any]] | None = None,
     post_processor: Callable[[dict], dict] | None = None,
     key_order: list[str] | None = None,
@@ -202,6 +202,8 @@ def merge(
     """
     if merge_functions is None:
         merge_functions = {}
+    original = original or {}
+    updates = updates or {}
     result = {}
     all_keys = set(original.keys()).union(updates.keys())
     for key in all_keys:
