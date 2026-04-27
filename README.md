@@ -49,6 +49,7 @@ print(merged_dict)
 #      "language": "en"
 # }
 ```
+
 ## Documentation
 For more detailed documentation, including advanced usage and customization options, please visit the [official documentation](https://fuso.readthedocs.io).
 
@@ -57,3 +58,7 @@ Contributions are welcome! Please feel free to submit issues or pull requests on
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Changes
+
+To see changes by version check the [changelog](docs/changelog.md).
