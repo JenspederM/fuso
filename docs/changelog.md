@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.4](https://github.com/JenspederM/fuso/compare/v0.3.3...v0.3.4) (2026-04-27)
+
+
+### Bug Fixes
+
+* merge should be able to handle None in inputs ([c780307](https://github.com/JenspederM/fuso/commit/c780307e594161be609d27729aa4a94543214e02))
+
 ## [0.3.3](https://github.com/JenspederM/fuso/compare/v0.3.2...v0.3.3) (2026-04-27)
 
 
