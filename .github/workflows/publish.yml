@@ -24,8 +24,6 @@ jobs:
         id: release
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-          config-file: ${{ github.workspace }}/release-please-config.json
-          manifest-file: ${{ github.workspace }}/.release-please-manifest.json
       - name: Install dependencies
         if: ${{ steps.release.outputs.releases_created == 'true' }}
         uses: jdx/mise-action@v3
