@@ -9,11 +9,31 @@ def test_docs(example_names, examples):
         exec(compiled, namespace, namespace)
     except AssertionError as e:
         print(
-            f"\n[DocTest FAIL] Example: {example_names}\n--- Code ---\n{code}\n--- AssertionError ---\n{e}\n--- Traceback ---\n{traceback.format_exc()}"
+            "\n".join(
+                [
+                    f"[DocTest FAIL] Example: {example_names}",
+                    "--- Code ---",
+                    code,
+                    "--- AssertionError ---",
+                    str(e),
+                    "--- Traceback ---",
+                    traceback.format_exc(),
+                ]
+            )
         )
         raise
     except Exception as e:
         print(
-            f"\n[DocTest ERROR] Example: {example_names}\n--- Code ---\n{code}\n--- Exception ---\n{e}\n--- Traceback ---\n{traceback.format_exc()}"
+            "\n".join(
+                [
+                    f"[DocTest ERROR] Example: {example_names}",
+                    "--- Code ---",
+                    code,
+                    "--- Exception ---",
+                    str(e),
+                    "--- Traceback ---",
+                    traceback.format_exc(),
+                ]
+            )
         )
         raise
