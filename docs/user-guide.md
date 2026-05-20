@@ -1,10 +1,21 @@
 # User Guide
 
-Fuso can be used to merge and manipulate dictionaries and lists of dictionaries in various ways. This user guide provides examples of how to use Fuso's functions for merging, sorting, and converting data structures.
+Fuso helps you merge structured data while keeping merge behavior explicit and predictable.
+This guide explains what each API is for, how the merge rules work, and where to apply
+each function in real projects.
+
+If you are new to the library, read from top to bottom once. After that, this page can be
+used as a reference when choosing between direct merge calls, factory functions, and list
+merging with defaults.
 
 ## Merge Factory
 
-Fuso provides a factory function for creating custom merge functions. This allows you to define your own merge strategies for specific keys in your dictionaries.
+Factory functions are useful when you want to define a merge policy once and reuse it in
+multiple places. Instead of passing merge options every time, you create a callable with
+your preferred configuration.
+
+The example below creates a reusable dictionary merge function with a custom strategy for
+one key.
 
 ```python test_create_merge_factory_example
 from fuso import create_merge_factory
@@ -19,7 +30,8 @@ merged_dict = merge_func(dict1, dict2)
 assert merged_dict == {'a': 3, 'b': 5, 'c': 4}
 ```
 
-This can also be used to create merge functions for lists of dictionaries, allowing you to specify how to merge dictionaries based on a common key.
+The same pattern exists for lists of dictionaries. You choose a key used to identify items,
+and the resulting factory merges list items by that key whenever you call it.
 
 ```python test_create_merge_list_of_dicts_by_key_factory_example
 from fuso import create_merge_list_of_dicts_by_key_factory
@@ -44,11 +56,14 @@ assert merged == [
 ]
 ```
 
-This allows you to easily create custom merge functions that can be reused across your codebase, making it easier to maintain and update your merging logic as needed.
+Use factories when merge behavior should be shared by multiple modules, jobs, or endpoints.
+It keeps merge configuration centralized and reduces repeated argument wiring.
 
 ## Merging Dictionaries
 
-To merge two dictionaries, you can use the `merge_dict` function. This function takes two dictionaries as input and returns a new dictionary that contains the merged key-value pairs.
+Use `merge_dict` when working with nested configuration-like data where updates should be
+applied deeply, not only at the top level. The function returns a new merged dictionary
+based on the original values and incoming updates.
 
 ```python test_merge_dict_example
 from fuso import merge_dict
@@ -60,7 +75,8 @@ merged_dict = merge_dict(dict1, dict2)
 assert merged_dict == {'a': 1, 'b': 3, 'c': 4}
 ```
 
-If you want more control over how the dictionaries are merged, you can specify a custom merge strategy.
+When a specific key needs custom behavior, pass a function in `merge_functions`. This lets
+you override the default rule for that key while keeping default behavior for all others.
 
 ```python test_merge_with_custom_strategy_example
 from fuso import merge_dict
@@ -76,7 +92,12 @@ assert merged_dict == {'a': 3, 'b': 5, 'c': 4}
 ```
 
 ## Merging Lists of Dictionaries
-To merge two lists of dictionaries based on a common key, you can use the `merge_list_of_dicts_by_key` function. This function takes two lists of dictionaries and a key to merge by, and returns a new list of dictionaries that contains the merged entries.
+Use `merge_list_of_dicts_by_key` when your data is a collection of objects and each object
+has an identity key such as `id` or `name`. Fuso converts each list into an internal lookup,
+merges objects with matching keys, and returns a merged list.
+
+The merge key must be unique within each input list. Duplicate keys are rejected with a
+`KeyError` so ambiguous merges fail early.
 
 ```python test_merge_list_of_dicts_by_key_example
 from fuso import merge_list_of_dicts_by_key
@@ -96,4 +117,166 @@ assert merged_list == [
     {'id': 2, 'name': 'Bob', 'tags': ['admin']},
     {'id': 3, 'name': 'Charlie', 'tags': ['user']},
 ]
+```
+
+## Merge Semantics
+
+`merge_dict` applies a small set of deterministic rules. Knowing these rules makes merge
+results easy to reason about:
+
+- Dictionary values are merged recursively, key by key.
+- List values are concatenated in order: original items first, update items after.
+- Scalar values are replaced by the update value.
+- `None` in `updates` means keep the original value.
+- Different non-`None` value types raise `TypeError`.
+
+```python test_merge_semantics_none_and_type_example
+from fuso import merge_dict
+
+original = {
+    "a": {"x": 1, "tags": ["user"]},
+    "b": 10,
+}
+updates = {
+    "a": {"tags": ["editor"]},
+    "b": None,
+}
+
+merged = merge_dict(original, updates)
+assert merged == {
+    "a": {"x": 1, "tags": ["user", "editor"]},
+    "b": 10,
+}
+```
+
+## Ordering
+
+Fuso aims to return stable, predictable output ordering.
+
+`merge_dict` sorts keys alphabetically by default. If you need a presentation-specific
+order, pass `key_order`.
+
+```python test_merge_dict_key_order_example
+from fuso import merge_dict
+
+original = {"b": 2, "a": 1, "c": 3}
+updates = {"a": 5, "d": 4}
+
+merged = merge_dict(original, updates, key_order=["d", "a"])
+assert list(merged.keys()) == ["d", "a", "b", "c"]
+assert merged == {"d": 4, "a": 5, "b": 2, "c": 3}
+```
+
+`merge_list_of_dicts_by_key` returns items sorted by the merge key, which keeps output
+stable regardless of input list order.
+
+```python test_merge_list_sorted_by_key_example
+from fuso import merge_list_of_dicts_by_key
+
+values = [{"id": 2, "name": "Bob"}]
+updates = [{"id": 1, "name": "Alice"}]
+
+merged = merge_list_of_dicts_by_key(values, updates, key="id")
+assert [item["id"] for item in merged] == [1, 2]
+```
+
+## Defaults for List Merging
+
+`default_key` lets you define shared updates once and apply them to all list items.
+Per-item updates are then applied on top of those defaults.
+
+In other words, the precedence is:
+
+1. Existing item value
+2. Default update (from `default_key`)
+3. Item-specific update
+
+```python test_merge_list_default_key_example
+from fuso import merge_list_of_dicts_by_key
+
+values = [
+    {"id": 1, "name": "Alice", "age": 30},
+    {"id": 2, "name": "Bob", "age": 25},
+]
+updates = [
+    {"id": "default", "age": 35},
+    {"id": 2, "name": "Robert"},
+]
+
+merged = merge_list_of_dicts_by_key(values, updates, key="id", default_key="default")
+assert merged == [
+    {"id": 1, "name": "Alice", "age": 35},
+    {"id": 2, "name": "Robert", "age": 35},
+]
+```
+
+## Errors and Edge Cases
+
+Fuso validates merge inputs and raises clear errors when it cannot produce an unambiguous
+result.
+
+- If a required merge key is missing, `KeyError` includes the available keys from the
+    offending object.
+- `original` and `updates` may be `None` in `merge_dict`; they are treated as empty
+    dictionaries.
+- If `to_list_of_dicts_by_key` encounters duplicate lookup keys, it raises `KeyError`.
+
+```python test_to_list_duplicate_keys_error_example
+from fuso import to_list_of_dicts_by_key
+
+values = [
+    {"id": 1, "name": "Alice"},
+    {"id": 1, "name": "Alicia"},
+]
+
+try:
+    to_list_of_dicts_by_key(values, key="id")
+    assert False, "Expected a KeyError for duplicate keys"
+except KeyError as error:
+    assert str(error) == '"Duplicate key \'1\' found for lookup key \'id\'"'
+```
+
+## Cookbook
+
+### Keep Maximum Numeric Value
+
+```python test_cookbook_keep_max_example
+from fuso import merge_dict
+
+def keep_max(old, new):
+    if old is None:
+        return new
+    if new is None:
+        return old
+    return max(old, new)
+
+merged = merge_dict(
+    {"name": "Alice", "age": 30},
+    {"age": 25},
+    merge_functions={"age": keep_max},
+)
+assert merged == {"age": 30, "name": "Alice"}
+```
+
+### Replace One List Key, Concatenate Another
+
+```python test_cookbook_replace_vs_concat_lists_example
+from fuso import merge_dict
+
+merged = merge_dict(
+    {
+        "plugins": ["base"],
+        "enabled_flags": ["a"],
+    },
+    {
+        "plugins": ["custom"],
+        "enabled_flags": ["b"],
+    },
+    merge_functions={"enabled_flags": lambda old, new: new or old or []},
+)
+
+assert merged == {
+    "enabled_flags": ["b"],
+    "plugins": ["base", "custom"],
+}
 ```

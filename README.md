@@ -11,9 +11,9 @@
 
 The goal of this library is to offer a customizable way of deeply merging dictionaries. In its simplest form, `fuso` offers an experience like other well-established dictionary merging libraries such as [`deepmerge`](https://pypi.org/project/deepmerge/), [`mergedeep`](https://pypi.org/project/mergedeep/).
 
-However, where this library differs is that it allows the user to specify custom `merge_functions` that should be applied for specific dot paths.
+However, where this library differs is that it allows the user to specify custom `merge_functions` for specific keys.
 
-For example, you may want to concatenate lists found at the dot path `settings.plugins`, but for other lists, you may want to replace them entirely. With `fuso`, this is possible.
+For example, you may want to concatenate lists for one key, but keep overwrite behavior for other keys. With `fuso`, this is possible.
 
 ## Installation
 You can install `fuso` via pip:
@@ -26,7 +26,7 @@ pip install fuso
 Here's a basic example of how to use `fuso` to merge two dictionaries:
 
 ```python
-from fuso import merge
+from fuso import merge_dict
 
 dict1 = {
     "settings": {
@@ -40,15 +40,30 @@ dict2 = {
         "language": "en"
     }
 }
-merged_dict = merge(dict1, dict2)
+merged_dict = merge_dict(dict1, dict2)
 print(merged_dict)
 # {
 #    "settings": {
 #      "theme": "dark",
 #      "plugins": ["plugin1", "plugin2", "plugin3"],
 #      "language": "en"
+#    }
 # }
 ```
+
+### Merge semantics
+
+- Dicts are merged recursively.
+- Lists are concatenated.
+- Scalars are overwritten by `updates`.
+- `None` in `updates` keeps the original value.
+- Merging non-`None` values of different types raises `TypeError`.
+- Duplicate lookup keys in `to_list_of_dicts_by_key` raise `KeyError`.
+
+### Ordering
+
+- `merge_dict` returns keys sorted alphabetically by default.
+- You can control key order with `key_order` (partial orders are supported).
 
 ## Documentation
 For more detailed documentation, including advanced usage and customization options, please visit the [official documentation](https://fuso.readthedocs.io).
