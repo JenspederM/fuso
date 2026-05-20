@@ -3,6 +3,9 @@ name: CI
 on:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: Lint Code
@@ -10,6 +13,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: jdx/mise-action@v4
       - name: Run ruff linting
         run: uv run ruff check .
@@ -19,6 +24,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: jdx/mise-action@v4
       - name: Check code format with ruff
         run: uv run ruff format --check .
@@ -28,6 +35,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: jdx/mise-action@v4
       - name: Run type checking with ty
         run: uv run ty check . --exclude scripts/
@@ -47,6 +56,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: jdx/mise-action@v4
       - name: Run tests with pytest
         run: uv run pytest .
