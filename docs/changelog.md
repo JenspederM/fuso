@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.4.0](https://github.com/JenspederM/fuso/compare/v0.3.4...v0.4.0) (2026-05-20)
+
+
+### Features
+
+* splits functions by type ([f70e7b5](https://github.com/JenspederM/fuso/commit/f70e7b57f1ff2011aa8b8b3e275a3f6b589021e8))
+
+
+### Bug Fixes
+
+* ensure keys not specifically mentioned are alphabetically ordered ([4ca04dc](https://github.com/JenspederM/fuso/commit/4ca04dc004cc1c067e48be50b3b0b7a582cdf66f))
+* merge_list should fail with duplicate keys ([a14b3d2](https://github.com/JenspederM/fuso/commit/a14b3d27beb1e7a28d77999366c5b458cf1759d0))
+
+
+### Documentation
+
+* add section on override pipelines ([804f08e](https://github.com/JenspederM/fuso/commit/804f08eb7c90f8283e26c46c13c51cfef54024f6))
+* make user-guide more readable ([fcc4950](https://github.com/JenspederM/fuso/commit/fcc4950b27492da334e2298f4153faa395970c15))
+* switch from mkdocs to zensical ([a9bed49](https://github.com/JenspederM/fuso/commit/a9bed49b23ed12a034cd012b4b8b47aa85746c17))
+
 ## [0.3.4](https://github.com/JenspederM/fuso/compare/v0.3.3...v0.3.4) (2026-04-27)
 
 
