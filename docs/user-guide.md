@@ -210,6 +210,91 @@ assert merged == [
 ]
 ```
 
+## Building Override Pipelines
+
+One of the most useful ways to use Fuso is not as a one-off merge helper, but as the core
+of an override pipeline.
+
+In that style, you first define a merge policy for your domain. Then you apply multiple
+layers of configuration in a deliberate order. This works well for cases such as:
+
+- base configuration plus environment-specific overrides
+- shared defaults plus per-resource overrides
+- reusable application settings plus customer-specific adjustments
+
+The key idea is that Fuso lets you separate two concerns:
+
+1. What counts as the same object and how matching objects should be merged
+2. In what order different override layers should be applied
+
+The example below defines a reusable overrider for an application config. Services are
+merged by `name`, while top-level keys follow the normal dictionary merge rules.
+
+```python test_building_override_pipeline_example
+from fuso import create_merge_factory, merge_list_of_dicts_by_key
+
+config_overrider = create_merge_factory(
+    merge_functions={
+        "services": lambda old, new: merge_list_of_dicts_by_key(
+            old or [], new or [], key="name"
+        )
+    },
+    key_order=["name", "region", "services", "tags"],
+)
+
+base_config = {
+    "name": "analytics",
+    "services": [
+        {"name": "api", "replicas": 2, "tags": ["public"]},
+        {"name": "worker", "replicas": 1, "tags": ["batch"]},
+    ],
+    "tags": ["base"],
+}
+
+default_overrides = {
+    "region": "eu-west-1",
+    "services": [
+        {"name": "api", "tags": ["monitored"]},
+        {"name": "worker", "replicas": 2},
+    ],
+}
+
+environment_overrides = {
+    "services": [
+        {"name": "api", "replicas": 3},
+        {"name": "scheduler", "replicas": 1, "tags": ["cron"]},
+    ],
+    "tags": ["staging"],
+}
+
+merged = config_overrider(base_config, default_overrides)
+merged = config_overrider(merged, environment_overrides)
+
+assert merged == {
+    "name": "analytics",
+    "region": "eu-west-1",
+    "services": [
+        {"name": "api", "replicas": 3, "tags": ["public", "monitored"]},
+        {"name": "scheduler", "replicas": 1, "tags": ["cron"]},
+        {"name": "worker", "replicas": 2, "tags": ["batch"]},
+    ],
+    "tags": ["base", "staging"],
+}
+```
+
+This pattern scales well because the merge policy stays in one place. Once you define the
+overrider, the rest of your code can focus on selecting the right layers to apply.
+
+When using Fuso this way, a good design approach is:
+
+1. Start by identifying which lists represent collections of named objects.
+2. Decide which key uniquely identifies each object in those collections.
+3. Write custom merge functions only for fields that need domain-specific behavior.
+4. Apply override layers in explicit precedence order, from least specific to most specific.
+
+That is often the point where `create_merge_factory` becomes more valuable than calling
+`merge_dict` directly at every call site.
+
 ## Errors and Edge Cases
 
 Fuso validates merge inputs and raises clear errors when it cannot produce an unambiguous
