@@ -112,6 +112,6 @@ def sort_dict(d: dict, key_order: list[str] | None = None) -> dict:
     """
     if not key_order:
         key_order = list(sorted(d.keys()))
-    other_keys = [k for k in d.keys() if k not in key_order]
+    other_keys = sorted([k for k in d.keys() if k not in key_order])
     order = key_order + other_keys
     return dict(sorted(d.items(), key=lambda x: order.index(x[0])))
