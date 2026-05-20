@@ -3,6 +3,9 @@ name: CI
 on:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: Lint Code
@@ -10,7 +13,9 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - uses: jdx/mise-action@v3
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4
       - name: Run ruff linting
         run: uv run ruff check .
   format:
@@ -19,7 +24,9 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - uses: jdx/mise-action@v3
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4
       - name: Check code format with ruff
         run: uv run ruff format --check .
   types:
@@ -28,16 +35,30 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - uses: jdx/mise-action@v3
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4
       - name: Run type checking with ty
         run: uv run ty check . --exclude scripts/
   tests:
     name: Run Tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: 
+          - "3.10"
+          - "3.11"
+          - "3.12"
+          - "3.13"
+          - "3.14"
+    env:
+      UV_PYTHON: ${{ matrix.python-version }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - uses: jdx/mise-action@v3
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4
       - name: Run tests with pytest
         run: uv run pytest .
   ci-pass:

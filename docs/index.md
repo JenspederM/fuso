@@ -20,6 +20,6 @@ layout: docs
 
 The goal of this library is to offer a customizable way of deeply merging dictionaries. In its simplest form, `fuso` offers an experience like other well-established dictionary merging libraries such as [`deepmerge`](https://pypi.org/project/deepmerge/), [`mergedeep`](https://pypi.org/project/mergedeep/).
 
-However, where this library differs is that it allows the user to specify custom `merge_functions` that should be applied for specific dot paths.
+However, where this library differs is that it allows the user to specify custom `merge_functions` for specific keys.
 
-For example, you may want to concatenate lists found at the dot path `settings.plugins`, but for other lists, you may want to replace them entirely. With `fuso`, this is possible.
+For example, you may want to concatenate lists for one key, but keep overwrite behavior for other keys. With `fuso`, this is possible.
