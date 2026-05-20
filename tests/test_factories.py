@@ -1,4 +1,7 @@
-from fuso.merge import create_merge_factory, create_merge_list_of_dicts_by_key_factory
+from fuso.factories import (
+    create_merge_factory,
+    create_merge_list_of_dicts_by_key_factory,
+)
 
 
 def test_merge_factory():

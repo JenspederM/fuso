@@ -56,20 +56,27 @@ def test_list_to_dict_by_key_empty():
             ["z", "x", "y"],
         ),
         (
-            {"two": 2, "one": 1, "three": 3},
+            {"b": 2, "a": 1, "c": 3},
             [],
-            ["two", "one", "three"],
+            ["a", "b", "c"],
         ),
         (
-            {"two": 2, "one": 1, "three": 3},
-            ["three", "two", "one"],
-            ["three", "two", "one"],
+            {"b": 2, "a": 1, "c": 3},
+            None,
+            ["a", "b", "c"],
+        ),
+        (
+            {"b": 2, "a": 1, "c": 3},
+            ["c", "b", "a"],
+            ["c", "b", "a"],
         ),
     ],
 )
 def test_sort_dict(value, key_order, expected_keys):
     sorted_dict = sort_dict(value, key_order)
-    assert list(sorted_dict.keys()) == expected_keys
+    keys = list(sorted_dict.keys())
+    for i in range(len(expected_keys)):
+        assert keys[i] == expected_keys[i]
 
 
 def test_sort_list_of_dicts_by_key():

@@ -1,6 +1,6 @@
 import pytest
 
-from fuso.merge import merge_list_of_dicts_by_key
+from fuso.lists import merge_list_of_dicts_by_key
 
 
 @pytest.mark.parametrize(

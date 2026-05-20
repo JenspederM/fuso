@@ -1,11 +1,4 @@
-"""Utility functions for Fuso.
-
-Includes functions for merging dictionaries and lists of dictionaries,
-sorting, and converting between different data structures.
-"""
-
-
-def to_list_of_dicts_by_key(values: list, key: str = "name") -> dict:
+def to_list_of_dicts_by_key(values: list[dict], key: str = "name") -> dict:
     """Convert a list of dictionaries to a dictionary of dictionaries
         using a specified key.
 
@@ -95,20 +88,25 @@ def sort_dict(d: dict, key_order: list[str] | None = None) -> dict:
             "a": 1,
             "c": 3,
         }
-        assert sort_dict(d, key_order=["a", "b"]) == {
+        assert sort_dict(d, key_order=["c", "a"]) == {
+            "c": 3,
             "a": 1,
             "b": 2,
+        }
+        assert sort_dict(d, key_order=["b", "a"]) == {
+            "b": 2,
+            "a": 1,
             "c": 3,
         }
         assert sort_dict(d) == {
-            "b": 2,
             "a": 1,
+            "b": 2,
             "c": 3,
         }
         ```
     """
-    if key_order is None:
-        key_order = []
+    if not key_order:
+        key_order = list(sorted(d.keys()))
     other_keys = [k for k in d.keys() if k not in key_order]
     order = key_order + other_keys
     return dict(sorted(d.items(), key=lambda x: order.index(x[0])))
