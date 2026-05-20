@@ -18,7 +18,6 @@ nav = [
     "reference/utils.md",
   ] },
 ]
-#
 extra_css = ["assets/extra.css"]
 watch = ["src", "docs", "scripts"]
 
