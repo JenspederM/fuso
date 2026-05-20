@@ -1,0 +1,3 @@
+# Factories
+
+::: fuso.factories
