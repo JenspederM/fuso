@@ -9,6 +9,9 @@ def to_list_of_dicts_by_key(values: list[dict], key: str = "name") -> dict:
     Returns:
         dict: Dictionary of dictionaries
 
+    Raises:
+        KeyError: If `key` is missing in an item or if duplicate key values are found.
+
     Example:
         ```py
         values = [
@@ -30,12 +33,14 @@ def to_list_of_dicts_by_key(values: list[dict], key: str = "name") -> dict:
         value_copy = value.copy()
         try:
             value_key = value_copy.pop(key)
-            result[value_key] = value_copy
         except KeyError:
             all_keys = ", ".join(value.keys())
             raise KeyError(
                 f"Key '{key}' not found in value. Available keys: {all_keys}"
             )
+        if value_key in result:
+            raise KeyError(f"Duplicate key '{value_key}' found for lookup key '{key}'")
+        result[value_key] = value_copy
     return result
 
 

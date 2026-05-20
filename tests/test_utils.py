@@ -42,6 +42,15 @@ def test_list_to_dict_by_key_empty():
     assert to_list_of_dicts_by_key(input_data) == expected_output
 
 
+def test_list_to_dict_by_key_duplicate_key():
+    input_data = [
+        {"id": 1, "name": "Alice"},
+        {"id": 1, "name": "Alicia"},
+    ]
+    with pytest.raises(KeyError, match="Duplicate key '1' found for lookup key 'id'"):
+        to_list_of_dicts_by_key(input_data, key="id")
+
+
 @pytest.mark.parametrize(
     "value,key_order,expected_keys",
     [
