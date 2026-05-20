@@ -274,9 +274,9 @@ assert merged == {
     "name": "analytics",
     "region": "eu-west-1",
     "services": [
-        {"name": "api", "replicas": 3, "tags": ["public", "monitored"]},
-        {"name": "scheduler", "replicas": 1, "tags": ["cron"]},
-        {"name": "worker", "replicas": 2, "tags": ["batch"]},
+        {"replicas": 3, "tags": ["public", "monitored"], "name": "api"},
+        {"replicas": 1, "tags": ["cron"], "name": "scheduler"},
+        {"replicas": 2, "tags": ["batch"], "name": "worker"},
     ],
     "tags": ["base", "staging"],
 }
