@@ -43,10 +43,12 @@ def test_docs(name, tmp_path):
     test_path.write_text("\n".join(test_func))
 
     # Act
-    exit_code = pytest.main([
-        test_path.absolute().as_posix(),
-        "-vv",
-    ])
+    exit_code = pytest.main(
+        [
+            test_path.absolute().as_posix(),
+            "-vv",
+        ]
+    )
 
     # Assert
     assert exit_code == 0, f"Documentation tests failed with exit code {exit_code}"

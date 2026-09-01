@@ -28,18 +28,8 @@ Here's a basic example of how to use `fuso` to merge two dictionaries:
 ```python
 from fuso import merge_dict
 
-dict1 = {
-    "settings": {
-        "theme": "dark",
-        "plugins": ["plugin1", "plugin2"]
-    }
-}
-dict2 = {
-    "settings": {
-        "plugins": ["plugin3"],
-        "language": "en"
-    }
-}
+dict1 = {"settings": {"theme": "dark", "plugins": ["plugin1", "plugin2"]}}
+dict2 = {"settings": {"plugins": ["plugin3"], "language": "en"}}
 merged_dict = merge_dict(dict1, dict2)
 print(merged_dict)
 # {
