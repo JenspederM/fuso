@@ -33,7 +33,7 @@ from fuso.lists import merge_list_of_dicts_by_key
             ],
             "id",
             [
-                {"id": 1, "name": "Alice", "age": 31, "tags": ["user", "editor"]},
+                {"id": 1, "name": "Alice", "age": 31, "tags": ["editor", "user"]},
                 {"id": 2, "name": "Bob", "age": 25, "tags": ["admin"]},
                 {"id": 3, "name": "Charlie", "age": 20, "tags": ["user"]},
             ],

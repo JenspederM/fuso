@@ -20,14 +20,16 @@ one key.
 ```python test_create_merge_factory_example
 from fuso import create_merge_factory
 
+
 def custom_merge(value1, value2):
     return value1 + value2
 
-merge_func = create_merge_factory(merge_functions={'b': custom_merge})
-dict1 = {'a': 1, 'b': 2}
-dict2 = {'a': 3, 'b': 3, 'c': 4}
+
+merge_func = create_merge_factory(merge_functions={"b": custom_merge})
+dict1 = {"a": 1, "b": 2}
+dict2 = {"a": 3, "b": 3, "c": 4}
 merged_dict = merge_func(dict1, dict2)
-assert merged_dict == {'a': 3, 'b': 5, 'c': 4}
+assert merged_dict == {"a": 3, "b": 5, "c": 4}
 ```
 
 The same pattern exists for lists of dictionaries. You choose a key used to identify items,
@@ -50,7 +52,7 @@ updates = [
 ]
 merged = merge_by_id(values, updates)
 assert merged == [
-    {"id": 1, "name": "ALICE", "tags": ["user", "editor"]},
+    {"id": 1, "name": "ALICE", "tags": ["editor", "user"]},
     {"id": 2, "name": "BOB", "tags": ["admin"]},
     {"id": 3, "name": "CHARLIE", "tags": ["user"]},
 ]
@@ -68,11 +70,11 @@ based on the original values and incoming updates.
 ```python test_merge_dict_example
 from fuso import merge_dict
 
-dict1 = {'a': 1, 'b': 2}
-dict2 = {'b': 3, 'c': 4}
+dict1 = {"a": 1, "b": 2}
+dict2 = {"b": 3, "c": 4}
 
 merged_dict = merge_dict(dict1, dict2)
-assert merged_dict == {'a': 1, 'b': 3, 'c': 4}
+assert merged_dict == {"a": 1, "b": 3, "c": 4}
 ```
 
 When a specific key needs custom behavior, pass a function in `merge_functions`. This lets
@@ -81,14 +83,16 @@ you override the default rule for that key while keeping default behavior for al
 ```python test_merge_with_custom_strategy_example
 from fuso import merge_dict
 
-dict1 = {'a': 1, 'b': 2}
-dict2 = {'a': 3, 'b': 3, 'c': 4}
+dict1 = {"a": 1, "b": 2}
+dict2 = {"a": 3, "b": 3, "c": 4}
+
 
 def custom_merge(value1, value2):
     return value1 + value2
 
-merged_dict = merge_dict(dict1, dict2, merge_functions={'b': custom_merge})
-assert merged_dict == {'a': 3, 'b': 5, 'c': 4}
+
+merged_dict = merge_dict(dict1, dict2, merge_functions={"b": custom_merge})
+assert merged_dict == {"a": 3, "b": 5, "c": 4}
 ```
 
 ## Merging Lists of Dictionaries
@@ -103,19 +107,19 @@ The merge key must be unique within each input list. Duplicate keys are rejected
 from fuso import merge_list_of_dicts_by_key
 
 list1 = [
-    {'id': 1, 'name': 'Alice', 'tags': ['user']},
-    {'id': 2, 'name': 'Bob', 'tags': ['admin']},
+    {"id": 1, "name": "Alice", "tags": ["user"]},
+    {"id": 2, "name": "Bob", "tags": ["admin"]},
 ]
 list2 = [
-    {'id': 1, 'tags': ['editor']},
-    {'id': 3, 'name': 'Charlie', 'tags': ['user']},
+    {"id": 1, "tags": ["editor"]},
+    {"id": 3, "name": "Charlie", "tags": ["user"]},
 ]
 
-merged_list = merge_list_of_dicts_by_key(list1, list2, key='id')
+merged_list = merge_list_of_dicts_by_key(list1, list2, key="id")
 assert merged_list == [
-    {'id': 1, 'name': 'Alice', 'tags': ['user', 'editor']},
-    {'id': 2, 'name': 'Bob', 'tags': ['admin']},
-    {'id': 3, 'name': 'Charlie', 'tags': ['user']},
+    {"id": 1, "name": "Alice", "tags": ["editor", "user"]},
+    {"id": 2, "name": "Bob", "tags": ["admin"]},
+    {"id": 3, "name": "Charlie", "tags": ["user"]},
 ]
 ```
 
@@ -144,7 +148,7 @@ updates = {
 
 merged = merge_dict(original, updates)
 assert merged == {
-    "a": {"x": 1, "tags": ["user", "editor"]},
+    "a": {"x": 1, "tags": ["editor", "user"]},
     "b": 10,
 }
 ```
@@ -274,7 +278,7 @@ assert merged == {
     "name": "analytics",
     "region": "eu-west-1",
     "services": [
-        {"replicas": 3, "tags": ["public", "monitored"], "name": "api"},
+        {"replicas": 3, "tags": ["monitored", "public"], "name": "api"},
         {"replicas": 1, "tags": ["cron"], "name": "scheduler"},
         {"replicas": 2, "tags": ["batch"], "name": "worker"},
     ],
@@ -318,7 +322,7 @@ try:
     to_list_of_dicts_by_key(values, key="id")
     assert False, "Expected a KeyError for duplicate keys"
 except KeyError as error:
-    assert str(error) == '"Duplicate key \'1\' found for lookup key \'id\'"'
+    assert str(error) == "\"Duplicate key '1' found for lookup key 'id'\""
 ```
 
 ## Cookbook
@@ -328,12 +332,14 @@ except KeyError as error:
 ```python test_cookbook_keep_max_example
 from fuso import merge_dict
 
+
 def keep_max(old, new):
     if old is None:
         return new
     if new is None:
         return old
     return max(old, new)
+
 
 merged = merge_dict(
     {"name": "Alice", "age": 30},

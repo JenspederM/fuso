@@ -2,10 +2,11 @@ from collections.abc import Callable
 from typing import Any
 
 from fuso.dicts import merge_dict
-from fuso.utils import sort_list_of_dicts_by_key, to_list_of_dicts_by_key
+from fuso.utils import sort_dict, sort_list_of_dicts_by_key, to_list_of_dicts_by_key
 
 
-def merge_list_of_dicts_by_key(  # noqa: PLR0913 - Too many arguments, but they are all necessary for the functionality
+# Too many arguments, but they are all necessary for the functionality
+def merge_list_of_dicts_by_key(  # noqa: PLR0913,PLR0917
     values: list[dict],
     updates: list[dict],
     key: str,
@@ -72,5 +73,5 @@ def merge_list_of_dicts_by_key(  # noqa: PLR0913 - Too many arguments, but they 
             key_order=object_key_order,
         )
         merged[key] = value_key
-        result.append(merged)
+        result.append(sort_dict(merged, key_order=[key]))
     return sort_list_of_dicts_by_key(result, key=key)
