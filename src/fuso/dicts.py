@@ -84,11 +84,11 @@ def _merge(
     elif update is None:
         return value
     elif isinstance(value, list) and isinstance(update, list):
-        return value + update
+        return sorted(value + update)
     elif isinstance(value, dict) and isinstance(update, dict):
         result = {}
         all_keys = set(value.keys()).union(update.keys())
         for key in all_keys:
             result[key] = _merge(value.get(key), update.get(key))
-        return result
+        return sort_dict(result)
     return update
