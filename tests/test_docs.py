@@ -19,6 +19,8 @@ def _generate_examples():
                     f"Example '{example_name}' imports unexpected modules: {imports}"
                 )
 
+            if not isinstance(example_name, str):
+                raise ValueError(f"Example name is not a string: {example_name}")
             examples[example_name] = "\n".join(examples[example_name])
             example_name = None
         elif example_name:
