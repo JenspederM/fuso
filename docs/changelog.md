@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.1](https://github.com/JenspederM/fuso/compare/v0.4.0...v0.4.1) (2026-09-01)
+
+
+### Bug Fixes
+
+* ensure list of dicts is sorted ([78f00c3](https://github.com/JenspederM/fuso/commit/78f00c3aca8edd2eecbcf169d3163c657ab5cbdb))
+* nested objects should be sorted ([5c46783](https://github.com/JenspederM/fuso/commit/5c46783310121983fa0d55cffa9b5793a8d93d79))
+* nested objects should be sorted ([161411d](https://github.com/JenspederM/fuso/commit/161411daaf3b849f783c475be5373353ee76870a))
+
 ## [0.4.0](https://github.com/JenspederM/fuso/compare/v0.3.4...v0.4.0) (2026-05-20)
 
 
